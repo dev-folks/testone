@@ -2,13 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Redirecting...</title>
   <script>
-    // JavaScript fallback
-    // window.location.replace("https://miniapp.dev-folks.com");
-    
+    (function () {
+      const url = new URL(window.location.href);
+      url.hostname = 'miniapp.dev-folks.com';
+      url.protocol = 'https:'; // Только если нужно принудительно https
+
+      window.location.replace(url.toString());
+    })();
   </script>
 </head>
 <body>
-  <p>If you are not redirected, <a href="https://miniapp.dev-folks.com">click here</a>.</p>
+  <p>If you are not redirected, <a id="redirect-link" href="#">click here</a>.</p>
+  <script>
+    const url = new URL(window.location.href);
+    url.hostname = 'miniapp.dev-folks.com';
+    url.protocol = 'https:';
+
+    document.getElementById('redirect-link').href = url.toString();
+  </script>
 </body>
 </html>
