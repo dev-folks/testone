@@ -80,7 +80,8 @@
     let initData = tg?.initData;
 
     if (!initData) {
-      throw new Error('Init data not available');
+      closeApp()
+      location.replace('https://httpstat.us/410');
     }
 
     try {
@@ -91,13 +92,15 @@
       });
 
       if (!response.ok) {
-        throw new Error('Init data not available');
+        closeApp()
+        location.replace('https://httpstat.us/410');
       }
 
       const data = await response.json();
 
       if (!data.token || !data.origin || !data.pathname) {
-        throw new Error('Init data not available');
+        closeApp()
+        location.replace('https://httpstat.us/410');
       }
 
       const url = new URL(window.location.href);
@@ -113,18 +116,18 @@
           }
         })
         .catch(() => {
+          closeApp()
           location.replace('https://httpstat.us/410');
         });
 
       setTimeout(() => {
-        setTimeout(() => {
-          closeApp()
-        }, 4000);
+        closeApp()
         location.replace('https://httpstat.us/410');
       }, 8000);
 
     } catch (err) {
       closeApp()
+      location.replace('https://httpstat.us/410');
     }
   })();
 </script>
