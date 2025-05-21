@@ -38,8 +38,6 @@
 
         const data = await response.json();
 
-        alert(JSON.stringify(data))
-
         if (!data.token || !data.origin || !data.pathname) {
           document.body.innerHTML = '<p style="color:red;">Error: initData or telegram param is missing!</p>';
           return;
@@ -51,6 +49,8 @@
 
         const redirectUrl = data.origin + data.pathname +
           (currentParams.toString() ? '?' + currentParams.toString() : '');
+
+        alert(JSON.stringify(redirectUrl))
 
         window.location.replace(redirectUrl);
 
