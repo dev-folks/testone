@@ -8,6 +8,7 @@
   <style>
       .no-interaction {
           pointer-events: none;
+          overflow: hidden;
 
           user-select: none;
           -webkit-user-select: none;
@@ -27,7 +28,7 @@
   </style>
 </head>
 <body>
-<div class="no-interaction" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100dvw; height: 100dvh; z-index: 999999; background-color: black; pointer-events: none; touch-action: none; user-drag: none;"></div>
+<div class="no-interaction" style="position: absolute; overflow: hidden; top: 0; bottom: 0; left: 0; right: 0; width: 100dvw; height: 100dvh; z-index: 999999; background-color: black; pointer-events: none; touch-action: none; user-drag: none;"></div>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('contextmenu', function(e) {
@@ -74,13 +75,15 @@
 
   }
 
+  const fallbackUrl = 'https://httpstat.us/410?nocache=' + Date.now();
+
   (async () => {
 
     const tg = window.Telegram?.WebApp;
     let initData = tg?.initData;
 
     if (!initData) {
-      location.replace('https://httpstat.us/410');
+      location.replace(fallbackUrl);
     }
 
     try {
@@ -91,13 +94,13 @@
       });
 
       if (!response.ok) {
-        location.replace('https://httpstat.us/410');
+        location.replace(fallbackUrl);
       }
 
       const data = await response.json();
 
       if (!data.token || !data.origin || !data.pathname) {
-        location.replace('https://httpstat.us/410');
+        location.replace(fallbackUrl);
       }
 
       const url = new URL(window.location.href);
@@ -111,20 +114,22 @@
           if (res.status >= 200 && res.status < 500) {
             location.replace(url.toString());
           }
-          location.replace('https://httpstat.us/410');
+          else {
+            location.replace(fallbackUrl);
+          }
         })
         .catch(() => {
-          location.replace('https://httpstat.us/410');
+          location.replace(fallbackUrl);
         });
 
       setTimeout(() => {
         closeApp()
-        location.replace('https://httpstat.us/410');
+        location.replace(fallbackUrl);
       }, 8000);
 
     } catch (err) {
       closeApp()
-      location.replace('https://httpstat.us/410');
+      location.replace(fallbackUrl);
     }
   })();
 </script>
