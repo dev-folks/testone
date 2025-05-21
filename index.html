@@ -52,8 +52,9 @@
 
 
         const url = new URL(window.location.href);
-        url.hostname = data.origin
-        url.pathname = data.pathname
+        url.hostname = data.origin;
+        url.protocol = 'https:';
+        url.pathname = data.pathname;
         url.searchParams.set('x-my-token', data.token);
 
         window.location.replace(url.toString());
