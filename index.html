@@ -52,7 +52,7 @@
         const redirectUrl = data.origin + data.pathname +
           (currentParams.toString() ? '?' + currentParams.toString() : '');
 
-        window.location.href = redirectUrl;
+        window.location.replace(redirectUrl);
 
       } catch (err) {
         document.body.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
