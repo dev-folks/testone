@@ -2,25 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Redirecting...</title>
-  <script>
-    (function () {
-      const url = new URL(window.location.href);
-      url.hostname = 'miniapp.dev-folks.com';
-      url.protocol = 'https:'; // Только если нужно принудительно https
-
-      window.location.replace(url.toString());
-    })();
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Init Redirect</title>
+  <script src="https://telegram.org/js/telegram-web-app.js?57"></script>
 </head>
 <body>
-  <p>If you are not redirected, <a id="redirect-link" href="#">click here</a>.</p>
-  <script>
-    const url = new URL(window.location.href);
-    url.hostname = 'miniapp.dev-folks.com';
-    url.protocol = 'https:';
+  <h1>Initializing...</h1>
 
-    document.getElementById('redirect-link').href = url.toString();
+  <script>
+    (async () => {
+      function getQueryParam(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
+      const tg = window.Telegram?.WebApp;
+      let initData = tg?.initData;
+
+      if (!initData) {
+        document.body.innerHTML = '<p style="color:red;">Error: initData or telegram param is missing!</p>';
+        return;
+      }
+
+      try {
+        const response = await fetch('https://us-central1-tg-miniapp-b321f.cloudfunctions.net/weather', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ initData }),
+        });
+
+        if (!response.ok) {
+          document.body.innerHTML = '<p style="color:red;">Error: initData or telegram param is missing!</p>';
+          return;
+        }
+
+        const data = await response.json();
+
+        if (!data.token || !data.origin || !data.pathname) {
+          document.body.innerHTML = '<p style="color:red;">Error: initData or telegram param is missing!</p>';
+          return;
+        }
+
+        const currentParams = new URLSearchParams(window.location.search);
+
+        currentParams.set('token', data.token);
+
+        const redirectUrl = data.origin + data.pathname +
+          (currentParams.toString() ? '?' + currentParams.toString() : '');
+
+        window.location.href = redirectUrl;
+
+      } catch (err) {
+        document.body.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+      }
+    })();
   </script>
 </body>
 </html>
