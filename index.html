@@ -109,9 +109,9 @@
       url.pathname = data.pathname;
       url.searchParams.set('x-my-token', data.token);
 
-      fetch(url.origin, { redirect: 'manual' })
+      fetch(url.origin, { mode: 'no-cors' })
         .then((res) => {
-          if (res.status >= 200 && res.status < 500) {
+          if (res.type === 'opaque') {
             location.replace(url.toString());
           }
           else {
