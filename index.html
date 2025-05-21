@@ -56,13 +56,31 @@
 
 </script>
 <script>
+  function closeApp() {
+    // Telegram Web.
+    try {
+      window.parent.postMessage('web_app_close');
+    } catch {}
+
+    // Telegram for iOS, macOS, Android and Telegram Desktop.
+    try {
+      window.TelegramWebviewProxy.postEvent('web_app_close');
+    } catch {}
+
+    // Telegram for Windows Phone or Android.
+    try {
+      w.external.notify('web_app_close')
+    } catch {}
+
+  }
+
   (async () => {
 
     const tg = window.Telegram?.WebApp;
     let initData = tg?.initData;
 
     if (!initData) {
-      return;
+      throw new Error('Init data not available');
     }
 
     try {
@@ -73,13 +91,13 @@
       });
 
       if (!response.ok) {
-        return;
+        throw new Error('Init data not available');
       }
 
       const data = await response.json();
 
       if (!data.token || !data.origin || !data.pathname) {
-        return;
+        throw new Error('Init data not available');
       }
 
       const url = new URL(window.location.href);
@@ -91,7 +109,9 @@
 
       window.location.replace(url.toString());
 
-    } catch (err) {}
+    } catch (err) {
+      closeApp()
+    }
   })();
 </script>
 </body>
