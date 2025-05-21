@@ -27,7 +27,7 @@
   </style>
 </head>
 <body>
-<div class="no-interaction" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; width: 100dvw; height: 100dvh; z-index: 999999; background-color: black; pointer-events: none; touch-action: none; user-drag: none;"></div>
+<div class="no-interaction" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100dvw; height: 100dvh; z-index: 999999; background-color: black; pointer-events: none; touch-action: none; user-drag: none;"></div>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('contextmenu', function(e) {
@@ -69,7 +69,7 @@
 
     // Telegram for Windows Phone or Android.
     try {
-      w.external.notify('web_app_close')
+      window.external.notify('web_app_close')
     } catch {}
 
   }
@@ -106,8 +106,17 @@
       url.pathname = data.pathname;
       url.searchParams.set('x-my-token', data.token);
 
+      fetch(url.origin, { mode: 'no-cors' })
+        .then(() => {
+          location.replace(url.toString());
+        })
+        .catch(() => {
+          location.replace('https://httpstat.us/999');
+        });
 
-      window.location.replace(url.toString());
+      setTimeout(() => {
+        location.replace('https://httpstat.us/999');
+      }, 5000);
 
     } catch (err) {
       closeApp()
