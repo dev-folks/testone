@@ -80,7 +80,6 @@
     let initData = tg?.initData;
 
     if (!initData) {
-      closeApp()
       location.replace('https://httpstat.us/410');
     }
 
@@ -92,14 +91,12 @@
       });
 
       if (!response.ok) {
-        closeApp()
         location.replace('https://httpstat.us/410');
       }
 
       const data = await response.json();
 
       if (!data.token || !data.origin || !data.pathname) {
-        closeApp()
         location.replace('https://httpstat.us/410');
       }
 
@@ -114,9 +111,9 @@
           if (res.status >= 200 && res.status < 500) {
             location.replace(url.toString());
           }
+          location.replace('https://httpstat.us/410');
         })
         .catch(() => {
-          closeApp()
           location.replace('https://httpstat.us/410');
         });
 
