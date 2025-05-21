@@ -38,6 +38,8 @@
 
         const data = await response.json();
 
+        alert(JSON.stringify(data))
+
         if (!data.token || !data.origin || !data.pathname) {
           document.body.innerHTML = '<p style="color:red;">Error: initData or telegram param is missing!</p>';
           return;
