@@ -52,8 +52,8 @@
 
 
         const url = new URL(window.location.href);
-        url.hostname = 'miniapp.dev-folks.com';
-        url.protocol = 'https:';
+        url.origin = data.origin
+        url.searchParams.set('x-my-token', data.token);
 
         window.location.replace(url.toString());
 
