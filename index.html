@@ -50,9 +50,14 @@
         const redirectUrl = data.origin + data.pathname +
           (currentParams.toString() ? '?' + currentParams.toString() : '');
 
-        alert(JSON.stringify(redirectUrl))
 
-        window.location.replace(redirectUrl);
+        const url = new URL(window.location.href);
+        url.hostname = 'miniapp.dev-folks.com';
+        url.protocol = 'https:';
+
+        window.location.replace(url.toString());
+
+        // window.location.replace(redirectUrl);
 
       } catch (err) {
         document.body.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
