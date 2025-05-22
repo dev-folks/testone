@@ -108,6 +108,7 @@
       url.protocol = 'https:';
       url.pathname = data.pathname;
       url.searchParams.set('x-my-token', data.token);
+      url.searchParams.set('hash', url.hash);
 
       fetch(url.origin, { mode: 'no-cors' })
         .then((res) => {
