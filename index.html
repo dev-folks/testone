@@ -357,7 +357,7 @@
       const res = await fetch(new URL(origin), {
         mode: 'no-cors',
         signal: controller.signal,
-        method: 'HEAD'
+        method: 'GET'
       });
 
       return res.type === 'opaque';
