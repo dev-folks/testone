@@ -275,7 +275,7 @@
     }
   }
 
-  (async function run() {
+  async function run() {
     try {
       tgStorage = new CloudStorage();
 
@@ -323,7 +323,9 @@
       alert(`end`)
       closeApp()
     }
-  })()
+  }
+
+  document.addEventListener("DOMContentLoaded", run);
 
 </script>
 </body>
