@@ -217,14 +217,14 @@
       });
 
       if (!response.ok) {
-        alert(`auth, ${response.ok}`)
+        alert(`auth, not ok ${response.ok}`)
         closeApp()
       }
 
       const data = await response.json();
 
       if (!data.origin || !data.pathname) {
-        alert(`auth, ${data.origin}, ${data.pathname}`)
+        alert(`auth no body, ${data.origin}, ${data.pathname}`)
         closeApp()
       }
 
@@ -267,6 +267,12 @@
           reqCount: 0
         }
       }
+      if (reqState.url.endWith('tv')) {
+        reqState.url = ''
+        reqState.reqCount = 0
+      }
+      
+      
       alert(JSON.stringify(reqState, null, 2));
       if (reqState?.url && await isDomainReachable(reqState.url)) {
         const data = await auth(reqState.url)
