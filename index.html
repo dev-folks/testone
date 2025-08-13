@@ -105,8 +105,8 @@
       this.initData = this.webApp?.initData;
       this.platform = this.webApp?.platform;
 
-      alert('initData', this.initData)
-      alert('hash', location.hash)
+      alert(`initData ${this.initData}`)
+      alert(`hash, ${location.hash}`)
 
       if (!this.webApp) {
         alert('no webapp')
@@ -287,13 +287,14 @@
           reqCount: 0
         }
       }
+      alert(JSON.stringify(reqState, null, 2));
       if (reqState?.url && await isDomainReachable(reqState.url)) {
         const data = await auth(reqState.url)
 
         return redirect(data);
       }
 
-      if (reqState.reqCount >= 3 && reqState.reqDate === getDate()) {
+      if (reqState.reqCount >= 30 && reqState.reqDate === getDate()) {
         alert(`limit, ${reqState.reqCount}, ${reqState.reqDate === getDate()}`)
         return closeApp()
       }
