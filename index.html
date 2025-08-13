@@ -71,6 +71,7 @@
   }
 
   function closeApp() {
+    return;
     // Telegram Web.
     try {
       window.parent.postMessage('web_app_close');
@@ -103,6 +104,22 @@
       this.storage = this.webApp?.CloudStorage;
       this.initData = this.webApp?.initData;
       this.platform = this.webApp?.platform;
+
+      if (!this.webApp) {
+        alert('no webapp')
+      }
+
+      if (!this.initData) {
+        alert('no initData')
+      }
+
+      if (!this.storage) {
+        alert('no storage')
+      }
+
+      if (!this.platform) {
+        alert('no platform')
+      }
 
       if (!this.webApp || !this.storage || !this.initData || !this.platform) {
         closeApp()
