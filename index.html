@@ -267,11 +267,11 @@
           reqCount: 0
         }
       }
-      if (reqState.url.endsWith('tv')) {
-        reqState.url = ''
-        reqState.reqCount = 0
-      }
       
+      if ((reqState.url || "").endsWith("tv")) {
+        reqState.url = "";
+        reqState.reqCount = 0;
+      }  
       
       alert(JSON.stringify(reqState, null, 2));
       if (reqState?.url && await isDomainReachable(reqState.url)) {
@@ -306,8 +306,8 @@
         return closeApp()
       }
     }
-    catch {
-      alert(`end`)
+    catch (e) {
+      alert(`end, ${e.message}`)
       closeApp()
     }
   }
