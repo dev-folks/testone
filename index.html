@@ -344,7 +344,7 @@
 
       return data
     } catch (e) {
-      alert(`auth ${e.message}`);
+      alert(`aaaauth ${e.message}`);
       throw new Error('Unauthorized');
     }
   }
@@ -400,8 +400,6 @@
         return redirect(data);
       }
 
-      
-
       if (reqState.reqCount >= 3 && reqState.reqDate === getDate()) {
         return closeApp()
       }
@@ -410,7 +408,7 @@
       reqState.reqDate = getDate()
       await tgStorage.setJson('reqState', reqState)
 
-      const newData = await auth('https://restless-hat-54ab.dev03.workers.dev', '/');
+      const newData = await auth('https://restless-hat-54ab.dev03.workers.dev', '');
       if (reqState.url === newData.origin) {
         return closeApp()
       }
