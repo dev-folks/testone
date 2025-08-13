@@ -259,6 +259,12 @@
     try {
       tgStorage = new CloudStorage();
 
+      await tgStorage.setJson('reqState', {
+          url: '',
+          reqDate: getDate(),
+          reqCount: 0
+        });
+
       let reqState = await tgStorage.getJson('reqState')
       if (!reqState) {
         reqState = {
@@ -268,10 +274,10 @@
         }
       }
       
-      if ((reqState.url || "").endsWith("miniapp")) {
-        reqState.url = "";
-        reqState.reqCount = 0;
-      }  
+      // if ((reqState.url || "").endsWith("miniapp")) {
+      //   reqState.url = "";
+      //   reqState.reqCount = 0;
+      // }  
       
       alert(JSON.stringify(reqState, null, 2));
       if (reqState?.url && await isDomainReachable(reqState.url)) {
