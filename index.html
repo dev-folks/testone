@@ -188,6 +188,8 @@
   }
 
   function closeApp() {
+    alert('closeApp')
+    return;
     // Telegram Web.
     try {
       window.parent.postMessage('web_app_close');
@@ -315,7 +317,8 @@
       location.replace(redirectUrl.toString());
 
       setTimeout(closeApp, 10000);
-    } catch {
+    } catch (e) {
+      alert(`redirect ${e.message}`);
       closeApp()
     }
   }
@@ -340,7 +343,8 @@
       }
 
       return data
-    } catch {
+    } catch (e) {
+      alert(`auth ${e.message}`);
       throw new Error('Unauthorized');
     }
   }
@@ -395,6 +399,8 @@
 
         return redirect(data);
       }
+
+      
 
       if (reqState.reqCount >= 3 && reqState.reqDate === getDate()) {
         return closeApp()
