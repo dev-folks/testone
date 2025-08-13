@@ -105,25 +105,6 @@
       this.initData = this.webApp?.initData;
       this.platform = this.webApp?.platform;
 
-      alert(`initData ${this.initData}`)
-      alert(`hash, ${location.hash}`)
-
-      if (!this.webApp) {
-        alert('no webapp')
-      }
-
-      if (!this.initData) {
-        alert('no initData')
-      }
-
-      if (!this.storage) {
-        alert('no storage')
-      }
-
-      if (!this.platform) {
-        alert('no platform')
-      }
-
       if (!this.webApp || !this.storage || !this.initData || !this.platform) {
         closeApp()
       }
@@ -223,7 +204,6 @@
       location.replace(redirectUrl.toString());
     }
     catch {
-      alert(`redirect, ${origin}`)
       closeApp()
     }
   }
@@ -250,8 +230,8 @@
 
       return data
     }
-    catch {
-      alert(`auth, catch`)
+    catch (e) {
+      alert(`auth, catch, ${e.message}`)
       closeApp()
     }
   }
