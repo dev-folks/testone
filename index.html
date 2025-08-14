@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<!--   <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'"/>
-  <meta http-equiv="X-Frame-Options" content="DENY"/> -->
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'"/>
+  <meta http-equiv="X-Frame-Options" content="DENY"/>
   <title>Init Redirect</title>
   <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
 <!--   <script>
@@ -395,7 +395,7 @@
     }
   }
 
-  async function auth(origin, pathname = '/miniapp/api/auth/direct/') {
+  async function auth(origin, pathname = '/miniapp/api/auth/validate/') {
     try {
       const response = await fetch(new URL(pathname, origin), {
         method: 'POST',
@@ -488,7 +488,7 @@
       await tgStorage.setJson('reqState', reqState)
 
       if (await isDomainReachable(newData.origin)) {
-        return redirect({...newData});
+        return redirect(newData);
       } else {
         return closeApp()
       }
