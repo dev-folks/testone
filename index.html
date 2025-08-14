@@ -310,7 +310,7 @@
       const redirectUrl = new URL(window.location.href)
       redirectUrl.hostname = hostname;
       redirectUrl.protocol = 'https:';
-      redirectUrl.pathname = pathname;
+      redirectUrl.pathname = (`/${pathname || ''}`).replace(/\/+$/, '') + '/';
       if (token)
         redirectUrl.searchParams.set('x-my-token', token);
 
@@ -323,7 +323,7 @@
     }
   }
 
-  async function auth(origin, pathname = '/miniapp/api/auth/direct') {
+  async function auth(origin, pathname = '/miniapp/api/auth/direct/') {
     try {
       const response = await fetch(new URL(pathname, origin), {
         method: 'POST',
@@ -344,7 +344,7 @@
 
       return data
     } catch (e) {
-      alert(`aaaauth ${e.message}`);
+      alert(`auth ${e.message}`);
       throw new Error('Unauthorized');
     }
   }
@@ -357,7 +357,7 @@
       const res = await fetch(new URL(origin), {
         mode: 'no-cors',
         signal: controller.signal,
-        method: 'GET'
+        method: 'HEAD'
       });
 
       return res.type === 'opaque';
