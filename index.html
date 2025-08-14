@@ -3,8 +3,42 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'"/>
+  <meta http-equiv="X-Frame-Options" content="DENY"/>
   <title>Init Redirect</title>
   <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+  <script>
+    function closeApp() {
+      // Telegram Web.
+      try {
+        window.parent.postMessage('web_app_close');
+      } catch {
+      }
+      try {
+        webApp?.close()
+      } catch {
+      }
+
+      // Telegram for iOS, macOS, Android and Telegram Desktop.
+      try {
+        window.TelegramWebviewProxy.postEvent('web_app_close');
+      } catch {
+      }
+
+      // Telegram for Windows Phone or Android.
+      try {
+        window.external.notify('web_app_close')
+      } catch {
+      }
+
+      window.top.location.href = 'https://http.cat/status/599';
+      location.replace('https://http.cat/status/599');
+    }
+
+    if (window.self !== window.top) {
+      closeApp();
+    }
+  </script>
   <style>
       #visual-overlay {
           position: fixed;
@@ -32,10 +66,12 @@
             caret-color: transparent !important;
             -webkit-tap-highlight-color: transparent !important;
         }
+
         html, body {
             overflow: hidden !important;
             scrollbar-width: none !important;
         }
+
         html::-webkit-scrollbar, body::-webkit-scrollbar {
             width: 0 !important;
             height: 0 !important;
@@ -51,21 +87,30 @@
   (() => {
     const STOP_EVENTS = [
       // Pointer/mouse
-      'click','dblclick','auxclick','mousedown','mouseup','mousemove','mouseenter','mouseleave',
-      'pointerdown','pointerup','pointermove','pointerenter','pointerleave','pointercancel',
-      'touchstart','touchend','touchmove','touchcancel',
-      'wheel','scroll','gesturestart','gesturechange','gestureend',
-      'dragstart','drag','dragend','drop',
-      'keydown','keypress','keyup','compositionstart','compositionupdate','compositionend',
-      'beforeinput','input','change','paste','copy','cut',
-      'focus','blur','focusin','focusout','contextmenu',
-      'submit','reset',
+      'click', 'dblclick', 'auxclick', 'mousedown', 'mouseup', 'mousemove', 'mouseenter', 'mouseleave',
+      'pointerdown', 'pointerup', 'pointermove', 'pointerenter', 'pointerleave', 'pointercancel',
+      'touchstart', 'touchend', 'touchmove', 'touchcancel',
+      'wheel', 'scroll', 'gesturestart', 'gesturechange', 'gestureend',
+      'dragstart', 'drag', 'dragend', 'drop',
+      'keydown', 'keypress', 'keyup', 'compositionstart', 'compositionupdate', 'compositionend',
+      'beforeinput', 'input', 'change', 'paste', 'copy', 'cut',
+      'focus', 'blur', 'focusin', 'focusout', 'contextmenu',
+      'submit', 'reset',
     ];
 
     const stopper = (e) => {
-      try { e.stopImmediatePropagation(); } catch {}
-      try { e.stopPropagation(); } catch {}
-      try { if (typeof e.preventDefault === 'function') e.preventDefault(); } catch {}
+      try {
+        e.stopImmediatePropagation();
+      } catch {
+      }
+      try {
+        e.stopPropagation();
+      } catch {
+      }
+      try {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+      } catch {
+      }
       return false;
     };
 
@@ -103,17 +148,32 @@
     const disableFocusables = (root = document) => {
       const focusables = root.querySelectorAll?.('a, button, input, select, textarea, details, summary, [contenteditable], [tabindex]');
       focusables?.forEach(el => {
-        try { el.setAttribute('tabindex', '-1'); } catch {}
-        try { el.setAttribute('aria-disabled', 'true'); } catch {}
-        try { if ('disabled' in el) el.disabled = true; } catch {}
+        try {
+          el.setAttribute('tabindex', '-1');
+        } catch {
+        }
+        try {
+          el.setAttribute('aria-disabled', 'true');
+        } catch {
+        }
+        try {
+          if ('disabled' in el) el.disabled = true;
+        } catch {
+        }
         for (const name of Object.getOwnPropertyNames(el)) {
           if (name.startsWith('on')) {
-            try { el[name] = null; } catch {}
+            try {
+              el[name] = null;
+            } catch {
+            }
           }
         }
         for (const attr of Array.from(el.attributes || [])) {
           if (attr.name.startsWith('on')) {
-            try { el.removeAttribute(attr.name); } catch {}
+            try {
+              el.removeAttribute(attr.name);
+            } catch {
+            }
           }
         }
       });
@@ -123,7 +183,10 @@
       const targets = [window, document, document.documentElement, document.body].filter(Boolean);
       targets.forEach(t => {
         STOP_EVENTS.forEach(type => {
-          try { t.addEventListener(type, stopper, { capture: true, passive: false }); } catch {}
+          try {
+            t.addEventListener(type, stopper, {capture: true, passive: false});
+          } catch {
+          }
         });
       });
     };
@@ -137,7 +200,10 @@
               disableFocusables(node);
               for (const attr of Array.from(node.attributes || [])) {
                 if (attr.name.startsWith('on')) {
-                  try { node.removeAttribute(attr.name); } catch {}
+                  try {
+                    node.removeAttribute(attr.name);
+                  } catch {
+                  }
                 }
               }
             }
@@ -148,7 +214,10 @@
             applyInert();
           }
           if (m.attributeName && m.attributeName.startsWith('on')) {
-            try { el.removeAttribute(m.attributeName); } catch {}
+            try {
+              el.removeAttribute(m.attributeName);
+            } catch {
+            }
           }
         }
       }
@@ -158,15 +227,22 @@
       applyInert();
       disableFocusables(document);
       attachAll();
-      try { document.documentElement.style.overflow = 'hidden'; } catch {}
-      try { document.body && (document.body.style.overflow = 'hidden'); } catch {}
       try {
-        mo.observe(document.documentElement || document, { childList: true, subtree: true, attributes: true });
-      } catch {}
+        document.documentElement.style.overflow = 'hidden';
+      } catch {
+      }
+      try {
+        document.body && (document.body.style.overflow = 'hidden');
+      } catch {
+      }
+      try {
+        mo.observe(document.documentElement || document, {childList: true, subtree: true, attributes: true});
+      } catch {
+      }
     };
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init, { once: true });
+      document.addEventListener('DOMContentLoaded', init, {once: true});
     } else {
       init();
     }
@@ -188,8 +264,6 @@
   }
 
   function closeApp() {
-    alert('closeApp')
-    return;
     // Telegram Web.
     try {
       window.parent.postMessage('web_app_close');
@@ -304,7 +378,7 @@
     }
   }
 
-  function redirect({ origin, pathname, token = null }) {
+  function redirect({origin, pathname, token = null}) {
     try {
       const hostname = new URL(origin).hostname;
       const redirectUrl = new URL(window.location.href)
@@ -318,7 +392,6 @@
 
       setTimeout(closeApp, 10000);
     } catch (e) {
-      alert(`redirect ${e.message}`);
       closeApp()
     }
   }
@@ -344,7 +417,6 @@
 
       return data
     } catch (e) {
-      alert(`auth ${e.message}`);
       throw new Error('Unauthorized');
     }
   }
