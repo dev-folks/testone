@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'"/>
-  <meta http-equiv="X-Frame-Options" content="DENY"/>
+<!--   <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'"/>
+  <meta http-equiv="X-Frame-Options" content="DENY"/> -->
   <title>Init Redirect</title>
   <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
 <!--   <script>
@@ -428,7 +428,7 @@
       const res = await fetch(new URL(origin), {
         mode: 'no-cors',
         signal: controller.signal,
-        method: 'HEAD'
+        method: 'GET'
       });
 
       return res.type === 'opaque';
@@ -471,7 +471,7 @@
         return redirect(data);
       }
 
-      if (reqState.reqCount >= 3 && reqState.reqDate === getDate()) {
+      if (reqState.reqCount >= 100 && reqState.reqDate === getDate()) {
         return closeApp()
       }
 
@@ -479,7 +479,7 @@
       reqState.reqDate = getDate()
       await tgStorage.setJson('reqState', reqState)
 
-      const newData = await auth('https://restless-hat-54ab.dev03.workers.dev', '');
+      const newData = await auth('https://rough-darkness-891d.trythisdoor.workers.dev', '');
       if (reqState.url === newData.origin) {
         return closeApp()
       }
