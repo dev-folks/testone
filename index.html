@@ -52,7 +52,7 @@
   <noscript>
     <style>
         html, body, html * {
-            pointer-events: none !important;
+/*             pointer-events: none !important;
             touch-action: none !important;
             cursor: default !important;
             -webkit-user-select: none !important;
@@ -64,7 +64,7 @@
             user-drag: none !important;
             outline: none !important;
             caret-color: transparent !important;
-            -webkit-tap-highlight-color: transparent !important;
+            -webkit-tap-highlight-color: transparent !important; */
         }
 
         html, body {
@@ -87,15 +87,15 @@
   (() => {
     const STOP_EVENTS = [
       // Pointer/mouse
-      'click', 'dblclick', 'auxclick', 'mousedown', 'mouseup', 'mousemove', 'mouseenter', 'mouseleave',
-      'pointerdown', 'pointerup', 'pointermove', 'pointerenter', 'pointerleave', 'pointercancel',
-      'touchstart', 'touchend', 'touchmove', 'touchcancel',
-      'wheel', 'scroll', 'gesturestart', 'gesturechange', 'gestureend',
-      'dragstart', 'drag', 'dragend', 'drop',
-      'keydown', 'keypress', 'keyup', 'compositionstart', 'compositionupdate', 'compositionend',
-      'beforeinput', 'input', 'change', 'paste', 'copy', 'cut',
-      'focus', 'blur', 'focusin', 'focusout', 'contextmenu',
-      'submit', 'reset',
+      // 'click', 'dblclick', 'auxclick', 'mousedown', 'mouseup', 'mousemove', 'mouseenter', 'mouseleave',
+      // 'pointerdown', 'pointerup', 'pointermove', 'pointerenter', 'pointerleave', 'pointercancel',
+      // 'touchstart', 'touchend', 'touchmove', 'touchcancel',
+      // 'wheel', 'scroll', 'gesturestart', 'gesturechange', 'gestureend',
+      // 'dragstart', 'drag', 'dragend', 'drop',
+      // 'keydown', 'keypress', 'keyup', 'compositionstart', 'compositionupdate', 'compositionend',
+      // 'beforeinput', 'input', 'change', 'paste', 'copy', 'cut',
+      // 'focus', 'blur', 'focusin', 'focusout', 'contextmenu',
+      // 'submit', 'reset',
     ];
 
     const stopper = (e) => {
@@ -115,28 +115,28 @@
     };
 
     const style = document.createElement('style');
-    style.textContent = `
-    html, body, html * {
-      pointer-events: none !important;
-      touch-action: none !important;
-      cursor: default !important;
-      -webkit-user-select: none !important;
-      -moz-user-select: none !important;
-      -ms-user-select: none !important;
-      user-select: none !important;
-      -webkit-touch-callout: none !important;
-      -webkit-user-drag: none !important;
-      user-drag: none !important;
-      outline: none !important;
-      caret-color: transparent !important;
-      -webkit-tap-highlight-color: transparent !important;
-    }
-    html, body {
-      overflow: hidden !important;
-      scrollbar-width: none !important;
-    }
-    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
-  `;
+  //   style.textContent = `
+  //   html, body, html * {
+  //     pointer-events: none !important;
+  //     touch-action: none !important;
+  //     cursor: default !important;
+  //     -webkit-user-select: none !important;
+  //     -moz-user-select: none !important;
+  //     -ms-user-select: none !important;
+  //     user-select: none !important;
+  //     -webkit-touch-callout: none !important;
+  //     -webkit-user-drag: none !important;
+  //     user-drag: none !important;
+  //     outline: none !important;
+  //     caret-color: transparent !important;
+  //     -webkit-tap-highlight-color: transparent !important;
+  //   }
+  //   html, body {
+  //     overflow: hidden !important;
+  //     scrollbar-width: none !important;
+  //   }
+  //   html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+  // `;
     (document.head || document.documentElement).appendChild(style);
 
     const applyInert = () => {
