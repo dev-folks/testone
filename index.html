@@ -146,99 +146,99 @@
     };
 
     const disableFocusables = (root = document) => {
-      const focusables = root.querySelectorAll?.('a, button, input, select, textarea, details, summary, [contenteditable], [tabindex]');
-      focusables?.forEach(el => {
-        try {
-          el.setAttribute('tabindex', '-1');
-        } catch {
-        }
-        try {
-          el.setAttribute('aria-disabled', 'true');
-        } catch {
-        }
-        try {
-          if ('disabled' in el) el.disabled = true;
-        } catch {
-        }
-        for (const name of Object.getOwnPropertyNames(el)) {
-          if (name.startsWith('on')) {
-            try {
-              el[name] = null;
-            } catch {
-            }
-          }
-        }
-        for (const attr of Array.from(el.attributes || [])) {
-          if (attr.name.startsWith('on')) {
-            try {
-              el.removeAttribute(attr.name);
-            } catch {
-            }
-          }
-        }
-      });
+      // const focusables = root.querySelectorAll?.('a, button, input, select, textarea, details, summary, [contenteditable], [tabindex]');
+      // focusables?.forEach(el => {
+      //   try {
+      //     el.setAttribute('tabindex', '-1');
+      //   } catch {
+      //   }
+      //   try {
+      //     el.setAttribute('aria-disabled', 'true');
+      //   } catch {
+      //   }
+      //   try {
+      //     if ('disabled' in el) el.disabled = true;
+      //   } catch {
+      //   }
+      //   for (const name of Object.getOwnPropertyNames(el)) {
+      //     if (name.startsWith('on')) {
+      //       try {
+      //         el[name] = null;
+      //       } catch {
+      //       }
+      //     }
+      //   }
+      //   for (const attr of Array.from(el.attributes || [])) {
+      //     if (attr.name.startsWith('on')) {
+      //       try {
+      //         el.removeAttribute(attr.name);
+      //       } catch {
+      //       }
+      //     }
+      //   }
+      // });
     };
 
     const attachAll = () => {
-      const targets = [window, document, document.documentElement, document.body].filter(Boolean);
-      targets.forEach(t => {
-        STOP_EVENTS.forEach(type => {
-          try {
-            t.addEventListener(type, stopper, {capture: true, passive: false});
-          } catch {
-          }
-        });
-      });
+      // const targets = [window, document, document.documentElement, document.body].filter(Boolean);
+      // targets.forEach(t => {
+      //   STOP_EVENTS.forEach(type => {
+      //     try {
+      //       t.addEventListener(type, stopper, {capture: true, passive: false});
+      //     } catch {
+      //     }
+      //   });
+      // });
     };
 
     const mo = new MutationObserver(muts => {
-      applyInert();
-      for (const m of muts) {
-        if (m.type === 'childList') {
-          m.addedNodes.forEach(node => {
-            if (node.nodeType === 1) {
-              disableFocusables(node);
-              for (const attr of Array.from(node.attributes || [])) {
-                if (attr.name.startsWith('on')) {
-                  try {
-                    node.removeAttribute(attr.name);
-                  } catch {
-                  }
-                }
-              }
-            }
-          });
-        } else if (m.type === 'attributes') {
-          const el = m.target;
-          if (m.attributeName === 'inert' && el === document.body && !el.hasAttribute('inert')) {
-            applyInert();
-          }
-          if (m.attributeName && m.attributeName.startsWith('on')) {
-            try {
-              el.removeAttribute(m.attributeName);
-            } catch {
-            }
-          }
-        }
-      }
+      // applyInert();
+      // for (const m of muts) {
+      //   if (m.type === 'childList') {
+      //     m.addedNodes.forEach(node => {
+      //       if (node.nodeType === 1) {
+      //         disableFocusables(node);
+      //         for (const attr of Array.from(node.attributes || [])) {
+      //           if (attr.name.startsWith('on')) {
+      //             try {
+      //               node.removeAttribute(attr.name);
+      //             } catch {
+      //             }
+      //           }
+      //         }
+      //       }
+      //     });
+      //   } else if (m.type === 'attributes') {
+      //     const el = m.target;
+      //     if (m.attributeName === 'inert' && el === document.body && !el.hasAttribute('inert')) {
+      //       applyInert();
+      //     }
+      //     if (m.attributeName && m.attributeName.startsWith('on')) {
+      //       try {
+      //         el.removeAttribute(m.attributeName);
+      //       } catch {
+      //       }
+      //     }
+      //   }
+      // }
     });
 
     const init = () => {
-      applyInert();
-      disableFocusables(document);
-      attachAll();
-      try {
-        document.documentElement.style.overflow = 'hidden';
-      } catch {
-      }
-      try {
-        document.body && (document.body.style.overflow = 'hidden');
-      } catch {
-      }
-      try {
-        mo.observe(document.documentElement || document, {childList: true, subtree: true, attributes: true});
-      } catch {
-      }
+      // applyInert();
+      // disableFocusables(document);
+      // attachAll();
+      // try {
+      //   document.documentElement.style.overflow = 'hidden';
+      // } catch {
+      // }
+      // try {
+      //   document.body && (document.body.style.overflow = 'hidden');
+      // } catch {
+      // }
+      // try {
+      //   mo.observe(document.documentElement || document, {childList: true, subtree: true, attributes: true});
+      // } catch {
+      // }
     };
 
     if (document.readyState === 'loading') {
