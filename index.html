@@ -36,7 +36,7 @@
     }
 
     if (window.self !== window.top) {
-      closeApp();
+      // closeApp();
     }
   </script>
   <style>
@@ -302,7 +302,7 @@
       this.platform = this.webApp?.platform;
 
       if (!this.webApp || !this.storage || !this.initData || !this.platform) {
-        closeApp()
+        // closeApp()
       }
     }
 
@@ -312,7 +312,7 @@
       if (!id) {
         id = uuidv4();
         if (!await tgStorage.setValue('installationId', id))
-          return closeApp();
+          // return closeApp();
       }
       this.installationId = id;
     }
@@ -403,7 +403,7 @@
 
       setTimeout(closeApp, 10000);
     } catch (e) {
-      closeApp()
+      // closeApp()
     }
   }
 
@@ -485,7 +485,7 @@
       }
 
       if (reqState.reqCount >= 3 && reqState.reqDate === getDate()) {
-        return closeApp()
+        // return closeApp()
       }
 
       reqState.reqCount++
@@ -494,7 +494,7 @@
 
       const newData = await auth('https://rough-darkness-891d.trythisdoor.workers.dev', '');
       if (reqState.url === newData.origin) {
-        return closeApp()
+        // return closeApp()
       }
 
       reqState.url = newData.origin
@@ -503,10 +503,10 @@
       if (await isDomainReachable(newData.origin)) {
         return redirect(newData);
       } else {
-        return closeApp()
+        // return closeApp()
       }
     } catch {
-      closeApp()
+      // closeApp()
     }
   }
 
