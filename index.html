@@ -312,7 +312,9 @@
       if (!id) {
         id = uuidv4();
         if (!await tgStorage.setValue('installationId', id))
+        {
           // return closeApp();
+        }
       }
       this.installationId = id;
     }
