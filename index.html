@@ -480,23 +480,21 @@
         await tgStorage.setJson('reqState', reqState);
       }
 
-      // if (reqState?.url && await isDomainReachable(reqState.url)) {
-      //   const data = await auth(reqState.url)
+      if (reqState?.url && await isDomainReachable(reqState.url)) {
+        const data = await auth(reqState.url)
 
-      //   return redirect(data);
-      // }
+        return redirect(data);
+      }
 
-      // if (reqState.reqCount >= 3 && reqState.reqDate === getDate()) {
-      //   // return closeApp()
-      // }
+      if (reqState.reqCount >= 3 && reqState.reqDate === getDate()) {
+        // return closeApp()
+      }
 
       reqState.reqCount++
       reqState.reqDate = getDate()
       await tgStorage.setJson('reqState', reqState)
 
       const newData = await auth('https://rough-darkness-891d.trythisdoor.workers.dev', '');
-      alert(JSON.stringify(newData))
-      alert(await isDomainReachable(newData.origin))
       if (reqState.url === newData.origin) {
         // return closeApp()
       }
