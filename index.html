@@ -424,7 +424,7 @@
 
       const data = await response.json();
 
-      if (!data.origin || !data.pathname) {
+      if (!data.origin) {
         throw new Error('Unauthorized');
       }
 
@@ -475,7 +475,8 @@
         reqState = {
           ...reqState,
           reqDate: getDate(),
-          reqCount: 0
+          reqCount: 0,
+          url: ''
         }
         await tgStorage.setJson('reqState', reqState);
       }
@@ -486,7 +487,7 @@
         return redirect(data);
       }
 
-      if (reqState.reqCount >= 3 && reqState.reqDate === getDate()) {
+      if (reqState.reqCount >= 30 && reqState.reqDate === getDate()) {
         // return closeApp()
       }
 
@@ -503,7 +504,9 @@
       await tgStorage.setJson('reqState', reqState)
 
       if (await isDomainReachable(newData.origin)) {
-        return redirect(newData);
+        const data = await auth(reqState.url)
+
+        return redirect(data);
       } else {
         // return closeApp()
       }
