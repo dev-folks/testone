@@ -471,13 +471,14 @@
         }
       }
 
+      reqState.url = ''
+
       if (reqState.reqDate < getDate()) {
         reqState = {
           ...reqState,
           reqDate: getDate(),
           reqCount: 0
         }
-        reqState.url = ''
         await tgStorage.setJson('reqState', reqState);
       }
 
