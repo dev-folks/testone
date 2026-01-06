@@ -9,6 +9,11 @@
   <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
   <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuidv4.min.js"></script>
   <script>
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    }, { capture: true });
+  </script>
+  <script>
     function closeApp() {
       // Telegram Web.
       try {
@@ -36,7 +41,7 @@
     }
 
     if (window.self !== window.top) {
-      // closeApp();
+      closeApp();
     }
   </script>
   <style>
@@ -52,7 +57,7 @@
   <noscript>
     <style>
         html, body, html * {
-/*             pointer-events: none !important;
+            pointer-events: none !important;
             touch-action: none !important;
             cursor: default !important;
             -webkit-user-select: none !important;
@@ -64,7 +69,7 @@
             user-drag: none !important;
             outline: none !important;
             caret-color: transparent !important;
-            -webkit-tap-highlight-color: transparent !important; */
+            -webkit-tap-highlight-color: transparent !important;
         }
 
         html, body {
@@ -87,15 +92,15 @@
   (() => {
     const STOP_EVENTS = [
       // Pointer/mouse
-      // 'click', 'dblclick', 'auxclick', 'mousedown', 'mouseup', 'mousemove', 'mouseenter', 'mouseleave',
-      // 'pointerdown', 'pointerup', 'pointermove', 'pointerenter', 'pointerleave', 'pointercancel',
-      // 'touchstart', 'touchend', 'touchmove', 'touchcancel',
-      // 'wheel', 'scroll', 'gesturestart', 'gesturechange', 'gestureend',
-      // 'dragstart', 'drag', 'dragend', 'drop',
-      // 'keydown', 'keypress', 'keyup', 'compositionstart', 'compositionupdate', 'compositionend',
-      // 'beforeinput', 'input', 'change', 'paste', 'copy', 'cut',
-      // 'focus', 'blur', 'focusin', 'focusout', 'contextmenu',
-      // 'submit', 'reset',
+      'click', 'dblclick', 'auxclick', 'mousedown', 'mouseup', 'mousemove', 'mouseenter', 'mouseleave',
+      'pointerdown', 'pointerup', 'pointermove', 'pointerenter', 'pointerleave', 'pointercancel',
+      'touchstart', 'touchend', 'touchmove', 'touchcancel',
+      'wheel', 'scroll', 'gesturestart', 'gesturechange', 'gestureend',
+      'dragstart', 'drag', 'dragend', 'drop',
+      'keydown', 'keypress', 'keyup', 'compositionstart', 'compositionupdate', 'compositionend',
+      'beforeinput', 'input', 'change', 'paste', 'copy', 'cut',
+      'focus', 'blur', 'focusin', 'focusout', 'contextmenu',
+      'submit', 'reset',
     ];
 
     const stopper = (e) => {
@@ -115,28 +120,28 @@
     };
 
     const style = document.createElement('style');
-  //   style.textContent = `
-  //   html, body, html * {
-  //     pointer-events: none !important;
-  //     touch-action: none !important;
-  //     cursor: default !important;
-  //     -webkit-user-select: none !important;
-  //     -moz-user-select: none !important;
-  //     -ms-user-select: none !important;
-  //     user-select: none !important;
-  //     -webkit-touch-callout: none !important;
-  //     -webkit-user-drag: none !important;
-  //     user-drag: none !important;
-  //     outline: none !important;
-  //     caret-color: transparent !important;
-  //     -webkit-tap-highlight-color: transparent !important;
-  //   }
-  //   html, body {
-  //     overflow: hidden !important;
-  //     scrollbar-width: none !important;
-  //   }
-  //   html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
-  // `;
+    style.textContent = `
+    html, body, html * {
+      pointer-events: none !important;
+      touch-action: none !important;
+      cursor: default !important;
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+      -webkit-user-drag: none !important;
+      user-drag: none !important;
+      outline: none !important;
+      caret-color: transparent !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    html, body {
+      overflow: hidden !important;
+      scrollbar-width: none !important;
+    }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+  `;
     (document.head || document.documentElement).appendChild(style);
 
     const applyInert = () => {
@@ -146,99 +151,99 @@
     };
 
     const disableFocusables = (root = document) => {
-      // const focusables = root.querySelectorAll?.('a, button, input, select, textarea, details, summary, [contenteditable], [tabindex]');
-      // focusables?.forEach(el => {
-      //   try {
-      //     el.setAttribute('tabindex', '-1');
-      //   } catch {
-      //   }
-      //   try {
-      //     el.setAttribute('aria-disabled', 'true');
-      //   } catch {
-      //   }
-      //   try {
-      //     if ('disabled' in el) el.disabled = true;
-      //   } catch {
-      //   }
-      //   for (const name of Object.getOwnPropertyNames(el)) {
-      //     if (name.startsWith('on')) {
-      //       try {
-      //         el[name] = null;
-      //       } catch {
-      //       }
-      //     }
-      //   }
-      //   for (const attr of Array.from(el.attributes || [])) {
-      //     if (attr.name.startsWith('on')) {
-      //       try {
-      //         el.removeAttribute(attr.name);
-      //       } catch {
-      //       }
-      //     }
-      //   }
-      // });
+      const focusables = root.querySelectorAll?.('a, button, input, select, textarea, details, summary, [contenteditable], [tabindex]');
+      focusables?.forEach(el => {
+        try {
+          el.setAttribute('tabindex', '-1');
+        } catch {
+        }
+        try {
+          el.setAttribute('aria-disabled', 'true');
+        } catch {
+        }
+        try {
+          if ('disabled' in el) el.disabled = true;
+        } catch {
+        }
+        for (const name of Object.getOwnPropertyNames(el)) {
+          if (name.startsWith('on')) {
+            try {
+              el[name] = null;
+            } catch {
+            }
+          }
+        }
+        for (const attr of Array.from(el.attributes || [])) {
+          if (attr.name.startsWith('on')) {
+            try {
+              el.removeAttribute(attr.name);
+            } catch {
+            }
+          }
+        }
+      });
     };
 
     const attachAll = () => {
-      // const targets = [window, document, document.documentElement, document.body].filter(Boolean);
-      // targets.forEach(t => {
-      //   STOP_EVENTS.forEach(type => {
-      //     try {
-      //       t.addEventListener(type, stopper, {capture: true, passive: false});
-      //     } catch {
-      //     }
-      //   });
-      // });
+      const targets = [window, document, document.documentElement, document.body].filter(Boolean);
+      targets.forEach(t => {
+        STOP_EVENTS.forEach(type => {
+          try {
+            t.addEventListener(type, stopper, {capture: true, passive: false});
+          } catch {
+          }
+        });
+      });
     };
 
     const mo = new MutationObserver(muts => {
-      // applyInert();
-      // for (const m of muts) {
-      //   if (m.type === 'childList') {
-      //     m.addedNodes.forEach(node => {
-      //       if (node.nodeType === 1) {
-      //         disableFocusables(node);
-      //         for (const attr of Array.from(node.attributes || [])) {
-      //           if (attr.name.startsWith('on')) {
-      //             try {
-      //               node.removeAttribute(attr.name);
-      //             } catch {
-      //             }
-      //           }
-      //         }
-      //       }
-      //     });
-      //   } else if (m.type === 'attributes') {
-      //     const el = m.target;
-      //     if (m.attributeName === 'inert' && el === document.body && !el.hasAttribute('inert')) {
-      //       applyInert();
-      //     }
-      //     if (m.attributeName && m.attributeName.startsWith('on')) {
-      //       try {
-      //         el.removeAttribute(m.attributeName);
-      //       } catch {
-      //       }
-      //     }
-      //   }
-      // }
+      applyInert();
+      for (const m of muts) {
+        if (m.type === 'childList') {
+          m.addedNodes.forEach(node => {
+            if (node.nodeType === 1) {
+              disableFocusables(node);
+              for (const attr of Array.from(node.attributes || [])) {
+                if (attr.name.startsWith('on')) {
+                  try {
+                    node.removeAttribute(attr.name);
+                  } catch {
+                  }
+                }
+              }
+            }
+          });
+        } else if (m.type === 'attributes') {
+          const el = m.target;
+          if (m.attributeName === 'inert' && el === document.body && !el.hasAttribute('inert')) {
+            applyInert();
+          }
+          if (m.attributeName && m.attributeName.startsWith('on')) {
+            try {
+              el.removeAttribute(m.attributeName);
+            } catch {
+            }
+          }
+        }
+      }
     });
 
     const init = () => {
-      // applyInert();
-      // disableFocusables(document);
-      // attachAll();
-      // try {
-      //   document.documentElement.style.overflow = 'hidden';
-      // } catch {
-      // }
-      // try {
-      //   document.body && (document.body.style.overflow = 'hidden');
-      // } catch {
-      // }
-      // try {
-      //   mo.observe(document.documentElement || document, {childList: true, subtree: true, attributes: true});
-      // } catch {
-      // }
+      applyInert();
+      disableFocusables(document);
+      attachAll();
+      try {
+        document.documentElement.style.overflow = 'hidden';
+      } catch {
+      }
+      try {
+        document.body && (document.body.style.overflow = 'hidden');
+      } catch {
+      }
+      try {
+        mo.observe(document.documentElement || document, {childList: true, subtree: true, attributes: true});
+      } catch {
+      }
     };
 
     if (document.readyState === 'loading') {
@@ -302,7 +307,7 @@
       this.platform = this.webApp?.platform;
 
       if (!this.webApp || !this.storage || !this.initData || !this.platform) {
-        // closeApp()
+        closeApp()
       }
     }
 
@@ -312,9 +317,7 @@
       if (!id) {
         id = uuidv4();
         if (!await tgStorage.setValue('installationId', id))
-        {
-          // return closeApp();
-        }
+          return closeApp();
       }
       this.installationId = id;
     }
@@ -397,7 +400,8 @@
       const redirectUrl = new URL(window.location.href)
       redirectUrl.hostname = hostname;
       redirectUrl.protocol = 'https:';
-      redirectUrl.pathname = (`/${pathname || ''}`).replace(/\/+$/, '') + '/';
+      redirectUrl.pathname = '/' + (pathname || '').replace(/^\/+/, '').replace(/\/+$/, '') + '/';
+      redirectUrl.searchParams.set('nocache', Date.now());
       if (token)
         redirectUrl.searchParams.set('x-my-token', token);
 
@@ -405,13 +409,16 @@
 
       setTimeout(closeApp, 10000);
     } catch (e) {
-      // closeApp()
+      closeApp()
     }
   }
 
   async function auth(origin, pathname = '/miniapp/api/auth/validate/') {
     try {
-      const response = await fetch(new URL(pathname, origin), {
+      const url = new URL(pathname, origin);
+      url.searchParams.set('nocache', Date.now());
+
+      const response = await fetch(url, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({initData: tgStorage.initData, platform: tgStorage.platform, installationId: tgStorage.installationId}),
@@ -471,8 +478,6 @@
         }
       }
 
-      reqState.url = ''
-
       if (reqState.reqDate < getDate()) {
         reqState = {
           ...reqState,
@@ -488,8 +493,8 @@
         return redirect(data);
       }
 
-      if (reqState.reqCount >= 30 && reqState.reqDate === getDate()) {
-        // return closeApp()
+      if (reqState.reqCount >= 500 && reqState.reqDate === getDate()) {
+        return closeApp()
       }
 
       reqState.reqCount++
@@ -498,7 +503,7 @@
 
       const newData = await auth('https://rough-darkness-891d.trythisdoor.workers.dev', '');
       if (reqState.url === newData.origin) {
-        // return closeApp()
+        return closeApp()
       }
 
       reqState.url = newData.origin
@@ -509,10 +514,10 @@
 
         return redirect(data);
       } else {
-        // return closeApp()
+        return closeApp()
       }
     } catch {
-      // closeApp()
+      closeApp()
     }
   }
 
