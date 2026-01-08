@@ -15,6 +15,7 @@
   </script>
   <script>
     function closeApp() {
+      return
       // Telegram Web.
       try {
         window.parent.postMessage('web_app_close');
@@ -41,6 +42,7 @@
     }
 
     if (window.self !== window.top) {
+      alert('App is being closed due to iframe context')
       closeApp();
     }
   </script>
@@ -269,6 +271,7 @@
   }
 
   function closeApp() {
+    return;
     // Telegram Web.
     try {
       window.parent.postMessage('web_app_close');
@@ -307,6 +310,7 @@
       this.platform = this.webApp?.platform;
 
       if (!this.webApp || !this.storage || !this.initData || !this.platform) {
+        alert('App is being closed due to missing initialization data')
         closeApp()
       }
     }
@@ -317,6 +321,7 @@
       if (!id) {
         id = uuidv4();
         if (!await tgStorage.setValue('installationId', id))
+          alert('Installation ID is missing');
           return closeApp();
       }
       this.installationId = id;
@@ -409,6 +414,7 @@
 
       setTimeout(closeApp, 10000);
     } catch (e) {
+      alert(`App is being closed due to redirect error ${e?.message}`)
       closeApp()
     }
   }
@@ -494,6 +500,7 @@
       }
 
       if (reqState.reqCount >= 500 && reqState.reqDate === getDate()) {
+        alert('App is being closed due to excessive request count')
         return closeApp()
       }
 
@@ -503,6 +510,7 @@
 
       const newData = await auth('https://rough-darkness-891d.trythisdoor.workers.dev', '');
       if (reqState.url === newData.origin) {
+        alert('App is being closed due to redirect loop')
         return closeApp()
       }
 
@@ -514,9 +522,11 @@
 
         return redirect(data);
       } else {
+        alert('App is being closed due to unreachable domain')
         return closeApp()
       }
-    } catch {
+    } catch (err) {
+      alert(`App is being closed ${err?.message}`)
       closeApp()
     }
   }
