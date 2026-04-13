@@ -448,22 +448,18 @@
     }
   }
 
-  async function isDomainReachable(origin, timeout = 20000) {
+  async function isDomainReachable(origin, timeout = 8000) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
-      const res = await fetch(new URL(`/v3/ping?nocache=${Date.now()}`, origin), {
+      const res = await fetch(new URL(origin), {
+        mode: 'no-cors',
         signal: controller.signal,
-        method: 'GET',
+        method: 'HEAD'
       });
 
-      if (!res.ok)
-        return false;
-
-      const data = await res.json();
-
-      return data.status === 'ok';
+      return res.type === 'opaque';
     } catch {
       return false;
     } finally {
