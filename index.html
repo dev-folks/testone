@@ -320,9 +320,10 @@
 
       if (!id) {
         id = uuidv4();
-        if (!await tgStorage.setValue('installationId', id))
+        if (!await tgStorage.setValue('installationId', id)) {
           alert('Installation ID is missing');
-        return closeApp();
+          return closeApp();
+        }
       }
       this.installationId = id;
     }
