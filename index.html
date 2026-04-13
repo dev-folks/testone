@@ -322,7 +322,7 @@
         id = uuidv4();
         if (!await tgStorage.setValue('installationId', id))
           alert('Installation ID is missing');
-          return closeApp();
+        return closeApp();
       }
       this.installationId = id;
     }
@@ -447,18 +447,22 @@
     }
   }
 
-  async function isDomainReachable(origin, timeout = 8000) {
+  async function isDomainReachable(origin, timeout = 20000) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
-      const res = await fetch(new URL(origin), {
-        mode: 'no-cors',
+      const res = await fetch(new URL(`/v3/ping?nocache=${Date.now()}`, origin), {
         signal: controller.signal,
-        method: 'HEAD'
+        method: 'GET',
       });
 
-      return res.type === 'opaque';
+      if (!res.ok)
+        return false;
+
+      const data = await res.json();
+
+      return data.status === 'ok';
     } catch {
       return false;
     } finally {
